@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of products</title>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Charger jQuery à partir d'un fichier local -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+
+</head>
+<script>
+    $(document).ready(function () {
+        $('.deleteBtn').click(function () {
+            if (confirm("Are you sure to delete this product ?")) {
+                var productId = $(this).attr('id');
+
+                $.ajax({
+                    url: '/products/delete/' + productId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        // Handle success response
+                        console.log(response);
+                        $("#product_" + productId).remove();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<body>
+    <div class="container-fluid">
+        <div class="col-md-11 mx-auto">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>price</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product=> { %>
+                        <tr id="product_<%= product.id %>">
+                            <td>
+                                <%= product.title %>
+                            </td>
+                            <td>
+                                <%= product.price %>
+                            </td>
+                            <td>
+                                <a class="btn btn-success" href="/products/edit/<%= product.id %>">Edit</a>
+                                <button class="btn btn-danger deleteBtn" id="<%= product.id %>">Delete</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
